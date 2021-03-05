@@ -183,14 +183,13 @@ if __name__ == "__main__":
     parser.add_argument("--list-nets", action="store_true", help="List known networks.")
     parser.add_argument("--genesis-url", default=os.environ.get('GENESIS_URL') , help="The url to the genesis file describing the ledger pool.  Can be specified using the 'GENESIS_URL' environment variable.")
     parser.add_argument("--genesis-path", default=os.getenv("GENESIS_PATH") or f"{get_script_dir()}/genesis.txn" , help="The path to the genesis file describing the ledger pool.  Can be specified using the 'GENESIS_PATH' environment variable.")
-    parser.add_argument("-s", "--seed", default=os.environ.get('SEED') , help="The privileged DID seed to use for the ledger requests.  Can be specified using the 'SEED' environment variable.")
+    parser.add_argument("-s", "--seed", default=os.environ.get('SEED') , help="The privileged DID seed to use for the ledger requests.  Can be specified using the 'SEED' environment variable. If DID seed is not given the request will run anonymously.")
     parser.add_argument("-pooltx", "--pooltx", help="Get pool ledger transactions.")
     parser.add_argument("-schemaid", "--schemaid", help="Get a specific schema from ledger.")
     parser.add_argument("-maintx", "--maintx", help="Get a specific transaction number from main ledger.")
     parser.add_argument("-maintxr", "--maintxrange", type=parseNumList, help="Get a range of transactions from main ledger.")
-
     parser.add_argument("-credid", "--credid", help="Get a specific schema from ledger.")
-    parser.add_argument("-a", "--anonymous", action="store_true", help="Perform requests anonymously, without requiring privileged DID seed.")
+    # parser.add_argument("-a", "--anonymous", action="store_true", help="Perform requests anonymously, without requiring privileged DID seed.")
     parser.add_argument("-v", "--verbose", action="store_true", help="Enable verbose logging.")
 
     monitor_plugins.get_parse_args(parser)
@@ -219,11 +218,13 @@ if __name__ == "__main__":
         parser.print_help()
         exit()
 
-    did_seed = None if args.anonymous else args.seed
-    if not did_seed and not args.anonymous:
-        print("Set the SEED environment variable or argument, or specify the anonymous flag.\n", file=sys.stderr)
-        parser.print_help()
-        exit()
+    # did_seed = None if args.anonymous else args.seed
+    # if not did_seed and not args.anonymous:
+    #     print("Set the SEED environment variable or argument, or specify the anonymous flag.\n", file=sys.stderr)
+    #     parser.print_help()
+    #     exit()
+
+    did_seed = None if not args.seed else args.seed
 
     log("indy-vdr version:", indy_vdr.version())
     if did_seed:
